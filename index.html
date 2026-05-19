@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redback Sports Championship</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+  :root {
+    --pixel: 4px;
+    --bg: #0d0d1a;
+    --bg2: #12122a;
+    --bg3: #1a1a3a;
+    --border: #3a3a6a;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --text: #e0e0ff;
+    --muted: #8888bb;
+    --accent: #7c3aed;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+    --amber: #f59e0b;
+    --teal: #14b8a6;
+    --orange: #f97316;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    line-height: 1.4;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    animation: twinkle var(--d) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.1; }
+    100% { opacity: 0.9; }
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .trophy-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes spiderDangle {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-5px); }
+  }
+
+  .pixel-trophy {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+  }
+
+  .title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 3vw, 22px);
+    color: var(--gold);
+    text-shadow: 3px 3px 0 #b8860b, 6px 6px 0 rgba(184,134,11,0.3);
+    letter-spacing: 2px;
+    line-height: 1.6;
+    animation: titlePulse 2s ease-in-out infinite;
+  }
+  @keyframes titlePulse {
+    0%, 100% { text-shadow: 3px 3px 0 #b8860b, 0 0 20px rgba(255,215,0,0.3); }
+    50% { text-shadow: 3px 3px 0 #b8860b, 0 0 40px rgba(255,215,0,0.6); }
+  }
+
+  .subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    letter-spacing: 4px;
+  }
+
+  .pixel-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 1.5rem 0;
+  }
+  .pixel-divider::before,
+  .pixel-divider::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 8px, transparent 8px, transparent 12px);
+  }
+  .pixel-divider span {
+    font-size: 18px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .season-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .stat-chip {
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    padding: 10px 14px;
+    text-align: center;
+    position: relative;
+  }
+  .stat-chip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px solid transparent;
+    border-top-color: rgba(255,255,255,0.05);
+    border-left-color: rgba(255,255,255,0.05);
+  }
+  .stat-chip .val {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .stat-chip .lbl {
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  .board {
+    border: 2px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    background: var(--bg2);
+  }
+  .board-header {
+    background: var(--bg3);
+    border-bottom: 2px solid var(--border);
+    display: grid;
+    grid-template-columns: 50px 1fr 80px 80px 80px 90px;
+    padding: 10px 16px;
+    gap: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px 80px 80px 90px;
+    padding: 14px 16px;
+    gap: 8px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: rgba(124,58,237,0.15); }
+  .row::after {
+    /* content: '▶ CLICK FOR HISTORY'; */
+    position: absolute;
+    right: 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+    letter-spacing: 1px;
+  }
+  .row:hover::after { opacity: 1; }
+
+  .rank {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    text-align: center;
+  }
+  .rank.r1 { color: var(--gold); }
+  .rank.r2 { color: var(--silver); }
+  .rank.r3 { color: var(--bronze); }
+  .rank.rn { color: var(--muted); }
+
+  .dept-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dept-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+    position: relative;
+  }
+  .dept-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .pts {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    text-align: right;
+  }
+  .pts.pts-pts { color: var(--gold); }
+  .pts.pts-w { color: var(--green); }
+  .pts.pts-l { color: var(--red); }
+  .pts.pts-d { color: var(--amber); }
+
+  .pts-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: barLoad 1s ease-out forwards;
+    transform-origin: left;
+  }
+  @keyframes barLoad {
+    from { width: 0 !important; }
+  }
+
+  .row[data-rank="1"] { animation: glowGold 3s ease-in-out infinite; }
+  .row[data-rank="2"] { animation: glowSilver 3s ease-in-out infinite; }
+  @keyframes glowGold {
+    0%, 100% { box-shadow: inset 0 0 0 0 transparent; }
+    50% { box-shadow: inset 0 0 20px rgba(255,215,0,0.05); }
+  }
+  @keyframes glowSilver {
+    0%, 100% { box-shadow: inset 0 0 0 0 transparent; }
+    50% { box-shadow: inset 0 0 20px rgba(192,192,192,0.04); }
+  }
+
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-backdrop.open { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    width: 100%;
+    max-width: 660px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.2s ease-out;
+  }
+  @keyframes modalIn {
+    from { transform: translateY(20px) scale(0.95); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--bg3);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .modal-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--text);
+    line-height: 1.8;
+  }
+  .modal-close {
+    background: none;
+    border: 2px solid var(--border);
+    color: var(--text);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+  }
+  .modal-close:hover { background: var(--red); color: white; border-color: var(--red); }
+
+  .modal-body { padding: 20px; }
+
+  .modal-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .mstat {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 12px;
+    text-align: center;
+  }
+  .mstat-val {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .mstat-lbl {
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .history-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .game-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto 70px;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+    background: var(--bg);
+    font-size: 17px;
+  }
+  .game-date { color: var(--muted); font-size: 15px; }
+  .game-vs { display: flex; align-items: center; gap: 8px; }
+  .game-opponent { color: var(--text); }
+  .game-score {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    text-align: right;
+  }
+  .badge {
+    display: inline-block;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 4px 7px;
+    text-align: center;
+  }
+  .badge-w { background: rgba(34,197,94,0.2); color: var(--green); border: 1px solid var(--green); }
+  .badge-l { background: rgba(239,68,68,0.2); color: var(--red); border: 1px solid var(--red); }
+  .badge-d { background: rgba(245,158,11,0.2); color: var(--amber); border: 1px solid var(--amber); }
+
+  .pixel-scroll {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+    animation: blink 1.5s step-end infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .sprite {
+    display: block;
+    width: 36px;
+    height: 36px;
+    image-rendering: pixelated;
+    position: relative;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .board-header, .row {
+      grid-template-columns: 40px 1fr 60px 60px 60px;
+    }
+    .col-pts-bar { display: none; }
+    .board-header .hpts { display: none; }
+    .title { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="wrapper">
+  <header class="header">
+    <div class="trophy-row">
+      <div style="position:relative;display:inline-block;width:32px;height:32px">
+        <svg class="pixel-trophy" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px">
+          <rect x="5" y="1" width="6" height="1" fill="#ffd700"/>
+          <rect x="4" y="2" width="8" height="1" fill="#ffd700"/>
+          <rect x="3" y="3" width="10" height="4" fill="#ffd700"/>
+          <rect x="2" y="3" width="2" height="3" fill="#ffd700"/>
+          <rect x="12" y="3" width="2" height="3" fill="#ffd700"/>
+          <rect x="4" y="7" width="8" height="2" fill="#e6b800"/>
+          <rect x="6" y="9" width="4" height="2" fill="#e6b800"/>
+          <rect x="5" y="11" width="6" height="1" fill="#c8a000"/>
+          <rect x="4" y="12" width="8" height="2" fill="#8b6914"/>
+        </svg>
+      </div>
+      <span style="font-size:40px;line-height:1">🕷️</span>
+    </div>
+    <h1 class="title">⚡ REDBACK SPORTS CHAMPIONSHIP ⚡</h1>
+    <p class="subtitle">[ SEASON 2026 · DEPARTMENT LEADERBOARD ]</p>
+  </header>
+
+  <div class="pixel-divider"><span>◆ SEASON STATS ◆</span></div>
+
+  <div class="season-bar">
+    <div class="stat-chip"><span class="val">6</span><span class="lbl">TEAMS</span></div>
+    <div class="stat-chip"><span class="val">3</span><span class="lbl">GAMES PLAYED</span></div>
+    <div class="stat-chip"><span class="val">3</span><span class="lbl">SPORTS</span></div>
+    <div class="stat-chip"><span class="val">2</span><span class="lbl">SATURDAYS LEFT</span></div>
+    <div class="stat-chip"><span class="val">19 MAY</span><span class="lbl">LAST UPDATED</span></div>
+  </div>
+
+  <div class="pixel-divider"><span>◆ RANKINGS ◆</span></div>
+
+  <div class="board">
+    <div class="board-header">
+      <span>#</span>
+      <span>DEPARTMENT</span>
+      <span style="text-align:right">W</span>
+      <span style="text-align:right">L</span>
+      <span style="text-align:right">D</span>
+      <span style="text-align:right" class="hpts">PTS</span>
+    </div>
+    <div id="leaderboard-rows"></div>
+  </div>
+
+  <div class="pixel-divider" style="margin-top:2rem"><span>◆ LAST UPDATED: TUE 19 MAY ◆</span></div>
+  <p class="pixel-scroll">▼ CLICK ANY TEAM ROW TO VIEW MATCH HISTORY ▼</p>
+</div>
+
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">DEPARTMENT HISTORY</div>
+      <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-stats" id="modal-stats"></div>
+      <div class="history-title">▶ MATCH HISTORY</div>
+      <div id="modal-history"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TEAMS = [
+  {
+    id: 'external-relations',
+    name: 'EXTERNAL RELATIONS',
+    color: '#06b6d4',
+    icon: '🌐',
+    w: 1, l: 0, d: 0,
+    games: [
+      { date: '19 MAY', opp: 'EMBEDDED SYSTEMS', score: '2–1', result: 'W', sport: '🎯 Dodgeball' },
+    ]
+  },
+  {
+    id: 'vehicle-analytics',
+    name: 'VEHICLE ANALYTICS',
+    color: '#7c3aed',
+    icon: '📊',
+    w: 1, l: 0, d: 0,
+    games: [
+      { date: '19 MAY', opp: 'CHASSIS', score: '43–22', result: 'W', sport: '🏀 Basketball' },
+    ]
+  },
+  {
+    id: 'brakes',
+    name: 'BRAKES',
+    color: '#ef4444',
+    icon: '🛑',
+    w: 1, l: 0, d: 0,
+    games: [
+      { date: '19 MAY', opp: 'EXECS + LAB CHEFS', score: '12–10', result: 'W', sport: '🏐 Volleyball' },
+    ]
+  },
+  {
+    id: 'embedded-systems',
+    name: 'EMBEDDED SYSTEMS',
+    color: '#f59e0b',
+    icon: '🔌',
+    w: 0, l: 1, d: 0,
+    games: [
+      { date: '19 MAY', opp: 'EXTERNAL RELATIONS', score: '1–2', result: 'L', sport: '🎯 Dodgeball' },
+    ]
+  },
+  {
+    id: 'chassis',
+    name: 'CHASSIS',
+    color: '#22c55e',
+    icon: '🦴',
+    w: 0, l: 1, d: 0,
+    games: [
+      { date: '19 MAY', opp: 'VEHICLE ANALYTICS', score: '22–43', result: 'L', sport: '🏀 Basketball' },
+    ]
+  },
+  {
+    id: 'execs-lab-chefs',
+    name: 'EXECS + LAB CHEFS',
+    color: '#ec4899',
+    icon: '👔',
+    w: 0, l: 1, d: 0,
+    games: [
+      { date: '19 MAY', opp: 'BRAKES', score: '10–12', result: 'L', sport: '🏐 Volleyball' },
+    ]
+  },
+];
+
+function calcPts(t) { return t.w * 3 + t.d; }
+
+const sorted = [...TEAMS].sort((a, b) => calcPts(b) - calcPts(a) || b.w - a.w);
+const maxPts = calcPts(sorted[0]) || 3;
+
+function renderRows() {
+  const container = document.getElementById('leaderboard-rows');
+  const ptsList = sorted.map(calcPts);
+  sorted.forEach((team, i) => {
+    const pts = calcPts(team);
+    const trueRank = ptsList.indexOf(pts) + 1;
+    const isTied = ptsList.filter(p => p === pts).length > 1;
+    let rankDisplay, rankClass;
+    if (isTied && trueRank === 1) { rankDisplay = '🥇'; rankClass = 'r1'; }
+    else if (isTied && trueRank <= 3) { rankDisplay = trueRank; rankClass = 'rn'; }
+    else if (!isTied && trueRank === 1) { rankDisplay = '👑'; rankClass = 'r1'; }
+    else if (!isTied && trueRank === 2) { rankDisplay = '🥈'; rankClass = 'r2'; }
+    else if (!isTied && trueRank === 3) { rankDisplay = '🥉'; rankClass = 'r3'; }
+    else { rankDisplay = trueRank; rankClass = 'rn'; }
+    const tiedLabel = isTied ? '<div style="font-family:monospace;font-size:7px;color:var(--gold);letter-spacing:1px;margin-top:3px">TIED</div>' : '';
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.dataset.rank = trueRank;
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', `${team.name} - click to view match history`);
+    row.innerHTML = `
+      <div class="rank ${rankClass}" style="display:flex;flex-direction:column;align-items:center">${rankDisplay}${tiedLabel}</div>
+      <div class="dept-cell">
+        <span style="font-size:28px;line-height:1">${team.icon}</span>
+        <div>
+          <div class="dept-name">${team.name}</div>
+        </div>
+      </div>
+      <div class="pts pts-w">${team.w}</div>
+      <div class="pts pts-l">${team.l}</div>
+      <div class="pts pts-d">${team.d}</div>
+      <div class="pts pts-pts">${pts}</div>
+    `;
+    row.addEventListener('click', () => openModal(team, trueRank));
+    row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openModal(team, trueRank); });
+    container.appendChild(row);
+  });
+}
+
+function openModal(team, rank) {
+  const pts = calcPts(team);
+  document.getElementById('modal-title').innerHTML = `${team.icon} ${team.name}<br><span style="font-size:8px;color:var(--muted);font-family:VT323,monospace;letter-spacing:2px"></span>`;
+  
+  const statsEl = document.getElementById('modal-stats');
+  statsEl.innerHTML = `
+    <div class="mstat"><span class="mstat-val" style="color:var(--gold)">${pts}</span><span class="mstat-lbl">POINTS</span></div>
+    <div class="mstat"><span class="mstat-val" style="color:var(--green)">${team.w}</span><span class="mstat-lbl">WINS</span></div>
+    <div class="mstat"><span class="mstat-val" style="color:var(--red)">${team.l}</span><span class="mstat-lbl">LOSSES</span></div>
+    <div class="mstat"><span class="mstat-val" style="color:var(--amber)">${team.d}</span><span class="mstat-lbl">DRAWS</span></div>
+  `;
+
+  const histEl = document.getElementById('modal-history');
+  if (team.games.length === 0) {
+    histEl.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;font-size:16px">NO GAMES PLAYED YET</div>';
+  } else {
+    histEl.innerHTML = team.games.map(g => {
+      const badgeClass = g.result === 'W' ? 'badge-w' : g.result === 'L' ? 'badge-l' : 'badge-d';
+      return `
+        <div class="game-row">
+          <div class="game-date">${g.date}</div>
+          <div class="game-vs">
+            <span style="color:var(--muted);font-size:14px">vs</span>
+            <span class="game-opponent">${g.opp}</span>
+            <span style="color:var(--muted);font-size:14px">${g.sport}</span>
+          </div>
+          <div class="game-score" style="color:${g.result==='W'?'var(--green)':g.result==='L'?'var(--red)':'var(--amber)'}">${g.score}</div>
+          <div style="text-align:right"><span class="badge ${badgeClass}">${g.result}</span></div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function makeStars() {
+  const el = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.setProperty('--d', (1.5 + Math.random() * 3) + 's');
+    s.style.opacity = Math.random() * 0.5;
+    el.appendChild(s);
+  }
+}
+
+makeStars();
+renderRows();
+</script>
+</body>
+</html>
