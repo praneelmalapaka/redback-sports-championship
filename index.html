@@ -94,10 +94,6 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
   }
-  @keyframes spiderDangle {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-5px); }
-  }
 
   .pixel-trophy {
     display: inline-block;
@@ -181,17 +177,20 @@
     letter-spacing: 2px;
   }
 
+  /* ── LEADERBOARD BOARD ── */
   .board {
     border: 2px solid var(--border);
     overflow: hidden;
     position: relative;
     background: var(--bg2);
   }
+
+  /* Desktop layout: 6 columns */
   .board-header {
     background: var(--bg3);
     border-bottom: 2px solid var(--border);
     display: grid;
-    grid-template-columns: 50px 1fr 80px 80px 80px 90px;
+    grid-template-columns: 56px 1fr 56px 56px 56px 72px;
     padding: 10px 16px;
     gap: 8px;
     font-family: 'Press Start 2P', monospace;
@@ -202,7 +201,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 50px 1fr 80px 80px 80px 90px;
+    grid-template-columns: 56px 1fr 56px 56px 56px 72px;
     padding: 14px 16px;
     gap: 8px;
     align-items: center;
@@ -214,46 +213,45 @@
   }
   .row:last-child { border-bottom: none; }
   .row:hover { background: rgba(124,58,237,0.15); }
-  .row::after {
-    /* content: '▶ CLICK FOR HISTORY'; */
-    position: absolute;
-    right: 16px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 7px;
-    color: var(--accent);
-    opacity: 0;
-    transition: opacity 0.2s;
-    letter-spacing: 1px;
-  }
-  .row:hover::after { opacity: 1; }
 
   .rank {
     font-family: 'Press Start 2P', monospace;
     font-size: 12px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
   }
   .rank.r1 { color: var(--gold); }
   .rank.r2 { color: var(--silver); }
   .rank.r3 { color: var(--bronze); }
   .rank.rn { color: var(--muted); }
 
+  .tied-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
   .dept-cell {
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
   }
   .dept-icon {
-    width: 36px;
-    height: 36px;
+    font-size: 24px;
+    line-height: 1;
     flex-shrink: 0;
-    image-rendering: pixelated;
-    position: relative;
   }
   .dept-name {
     font-family: 'Press Start 2P', monospace;
     font-size: 9px;
     line-height: 1.8;
     color: var(--text);
+    word-break: break-word;
   }
 
   .pts {
@@ -266,28 +264,6 @@
   .pts.pts-l { color: var(--red); }
   .pts.pts-d { color: var(--amber); }
 
-  .pts-bar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .bar-track {
-    flex: 1;
-    height: 8px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-  .bar-fill {
-    height: 100%;
-    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-    animation: barLoad 1s ease-out forwards;
-    transform-origin: left;
-  }
-  @keyframes barLoad {
-    from { width: 0 !important; }
-  }
-
   .row[data-rank="1"] { animation: glowGold 3s ease-in-out infinite; }
   .row[data-rank="2"] { animation: glowSilver 3s ease-in-out infinite; }
   @keyframes glowGold {
@@ -297,6 +273,74 @@
   @keyframes glowSilver {
     0%, 100% { box-shadow: inset 0 0 0 0 transparent; }
     50% { box-shadow: inset 0 0 20px rgba(192,192,192,0.04); }
+  }
+
+  @media (max-width: 540px) {
+    .wrapper { padding: 1.2rem 0.6rem 3rem; }
+
+    .title { font-size: 11px; letter-spacing: 1px; }
+    .subtitle { font-size: 14px; letter-spacing: 2px; }
+
+    .season-bar {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .stat-chip .val { font-size: 11px; }
+    .stat-chip .lbl { font-size: 13px; }
+
+    .board-header {
+      grid-template-columns: 44px 1fr 44px;
+      padding: 8px 10px;
+      font-size: 8px;
+      gap: 6px;
+    }
+    .board-header .hcol-w,
+    .board-header .hcol-l,
+    .board-header .hcol-d { display: none; }
+
+    .row {
+      grid-template-columns: 44px 1fr auto;
+      padding: 10px;
+      gap: 8px;
+      align-items: center;
+    }
+    .row .pts-w,
+    .row .pts-l,
+    .row .pts-d { display: none; }
+
+    .dept-cell {
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+    }
+    .dept-icon { font-size: 22px; }
+    .dept-name { font-size: 8px; line-height: 1.6; }
+
+    .dept-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+    }
+    .dept-meta .m-w { color: var(--green); }
+    .dept-meta .m-l { color: var(--red); }
+    .dept-meta .m-d { color: var(--amber); }
+
+    .rank { font-size: 16px; }
+    .tied-label { font-size: 5px; }
+
+    .pts.pts-pts {
+      font-size: 14px;
+      text-align: center;
+      background: var(--bg3);
+      border: 1px solid var(--gold);
+      padding: 6px 8px;
+      min-width: 40px;
+      color: var(--gold);
+    }
+
+    .pixel-divider span { font-size: 13px; }
+    .pixel-scroll { font-size: 12px; }
   }
 
   .modal-backdrop {
@@ -352,6 +396,8 @@
     padding: 6px 10px;
     cursor: pointer;
     transition: background 0.1s, color 0.1s;
+    flex-shrink: 0;
+    margin-left: 10px;
   }
   .modal-close:hover { background: var(--red); color: white; border-color: var(--red); }
 
@@ -390,7 +436,7 @@
 
   .game-row {
     display: grid;
-    grid-template-columns: 100px 1fr auto 70px;
+    grid-template-columns: 90px 1fr auto 60px;
     gap: 10px;
     align-items: center;
     padding: 10px 12px;
@@ -400,7 +446,7 @@
     font-size: 17px;
   }
   .game-date { color: var(--muted); font-size: 15px; }
-  .game-vs { display: flex; align-items: center; gap: 8px; }
+  .game-vs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .game-opponent { color: var(--text); }
   .game-score {
     font-family: 'Press Start 2P', monospace;
@@ -418,6 +464,19 @@
   .badge-l { background: rgba(239,68,68,0.2); color: var(--red); border: 1px solid var(--red); }
   .badge-d { background: rgba(245,158,11,0.2); color: var(--amber); border: 1px solid var(--amber); }
 
+  @media (max-width: 480px) {
+    .modal-stats { grid-template-columns: repeat(2, 1fr); }
+    .game-row {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+    }
+    .game-date { grid-column: 1; grid-row: 1; }
+    .game-vs { grid-column: 1; grid-row: 2; font-size: 14px; }
+    .game-score { grid-column: 2; grid-row: 1; }
+    .game-badge { grid-column: 2; grid-row: 2; text-align: right; }
+    .modal-title { font-size: 8px; }
+  }
+
   .pixel-scroll {
     width: 100%;
     text-align: center;
@@ -427,24 +486,6 @@
     animation: blink 1.5s step-end infinite;
   }
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-  .sprite {
-    display: block;
-    width: 36px;
-    height: 36px;
-    image-rendering: pixelated;
-    position: relative;
-  }
-
-  /* Responsive */
-  @media (max-width: 600px) {
-    .board-header, .row {
-      grid-template-columns: 40px 1fr 60px 60px 60px;
-    }
-    .col-pts-bar { display: none; }
-    .board-header .hpts { display: none; }
-    .title { font-size: 11px; }
-  }
 </style>
 </head>
 <body>
@@ -489,16 +530,16 @@
     <div class="board-header">
       <span>#</span>
       <span>DEPARTMENT</span>
-      <span style="text-align:right">W</span>
-      <span style="text-align:right">L</span>
-      <span style="text-align:right">D</span>
-      <span style="text-align:right" class="hpts">PTS</span>
+      <span class="hcol-w" style="text-align:right">W</span>
+      <span class="hcol-l" style="text-align:right">L</span>
+      <span class="hcol-d" style="text-align:right">D</span>
+      <span style="text-align:right">PTS</span>
     </div>
     <div id="leaderboard-rows"></div>
   </div>
 
   <div class="pixel-divider" style="margin-top:2rem"><span>◆ LAST UPDATED: TUE 19 MAY ◆</span></div>
-  <p class="pixel-scroll">▼ CLICK ANY TEAM ROW TO VIEW MATCH HISTORY ▼</p>
+  <p class="pixel-scroll">▼ TAP ANY TEAM ROW TO VIEW MATCH HISTORY ▼</p>
 </div>
 
 <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
@@ -582,7 +623,6 @@ const TEAMS = [
 function calcPts(t) { return t.w * 3 + t.d; }
 
 const sorted = [...TEAMS].sort((a, b) => calcPts(b) - calcPts(a) || b.w - a.w);
-const maxPts = calcPts(sorted[0]) || 3;
 
 function renderRows() {
   const container = document.getElementById('leaderboard-rows');
@@ -591,6 +631,7 @@ function renderRows() {
     const pts = calcPts(team);
     const trueRank = ptsList.indexOf(pts) + 1;
     const isTied = ptsList.filter(p => p === pts).length > 1;
+
     let rankDisplay, rankClass;
     if (isTied && trueRank === 1) { rankDisplay = '🥇'; rankClass = 'r1'; }
     else if (isTied && trueRank <= 3) { rankDisplay = trueRank; rankClass = 'rn'; }
@@ -598,24 +639,31 @@ function renderRows() {
     else if (!isTied && trueRank === 2) { rankDisplay = '🥈'; rankClass = 'r2'; }
     else if (!isTied && trueRank === 3) { rankDisplay = '🥉'; rankClass = 'r3'; }
     else { rankDisplay = trueRank; rankClass = 'rn'; }
-    const tiedLabel = isTied ? '<div style="font-family:monospace;font-size:7px;color:var(--gold);letter-spacing:1px;margin-top:3px">TIED</div>' : '';
+
+    const tiedLabel = isTied ? `<div class="tied-label">TIED</div>` : '';
+
     const row = document.createElement('div');
     row.className = 'row';
     row.dataset.rank = trueRank;
     row.setAttribute('tabindex', '0');
     row.setAttribute('role', 'button');
-    row.setAttribute('aria-label', `${team.name} - click to view match history`);
+    row.setAttribute('aria-label', `${team.name} - tap to view match history`);
     row.innerHTML = `
-      <div class="rank ${rankClass}" style="display:flex;flex-direction:column;align-items:center">${rankDisplay}${tiedLabel}</div>
+      <div class="rank ${rankClass}">${rankDisplay}${tiedLabel}</div>
       <div class="dept-cell">
-        <span style="font-size:28px;line-height:1">${team.icon}</span>
+        <span class="dept-icon">${team.icon}</span>
         <div>
           <div class="dept-name">${team.name}</div>
+          <div class="dept-meta">
+            <span class="m-w">W:${team.w}</span>
+            <span class="m-l">L:${team.l}</span>
+            <span class="m-d">D:${team.d}</span>
+          </div>
         </div>
       </div>
-      <div class="pts pts-w">${team.w}</div>
-      <div class="pts pts-l">${team.l}</div>
-      <div class="pts pts-d">${team.d}</div>
+      <div class="pts pts-w desktop-only">${team.w}</div>
+      <div class="pts pts-l desktop-only">${team.l}</div>
+      <div class="pts pts-d desktop-only">${team.d}</div>
       <div class="pts pts-pts">${pts}</div>
     `;
     row.addEventListener('click', () => openModal(team, trueRank));
@@ -626,8 +674,8 @@ function renderRows() {
 
 function openModal(team, rank) {
   const pts = calcPts(team);
-  document.getElementById('modal-title').innerHTML = `${team.icon} ${team.name}<br><span style="font-size:8px;color:var(--muted);font-family:VT323,monospace;letter-spacing:2px"></span>`;
-  
+  document.getElementById('modal-title').innerHTML = `${team.icon} ${team.name}`;
+
   const statsEl = document.getElementById('modal-stats');
   statsEl.innerHTML = `
     <div class="mstat"><span class="mstat-val" style="color:var(--gold)">${pts}</span><span class="mstat-lbl">POINTS</span></div>
@@ -651,7 +699,7 @@ function openModal(team, rank) {
             <span style="color:var(--muted);font-size:14px">${g.sport}</span>
           </div>
           <div class="game-score" style="color:${g.result==='W'?'var(--green)':g.result==='L'?'var(--red)':'var(--amber)'}">${g.score}</div>
-          <div style="text-align:right"><span class="badge ${badgeClass}">${g.result}</span></div>
+          <div class="game-badge" style="text-align:right"><span class="badge ${badgeClass}">${g.result}</span></div>
         </div>
       `;
     }).join('');
