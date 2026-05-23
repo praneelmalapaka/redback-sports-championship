@@ -620,7 +620,7 @@ const TEAMS = [
   },
 ];
 
-function calcPts(t) { return t.w * 3 + t.d; }
+function calcPts(t) { return t.w * 3 + t.d + t.l; }
 
 const sorted = [...TEAMS].sort((a, b) => calcPts(b) - calcPts(a) || b.w - a.w);
 
