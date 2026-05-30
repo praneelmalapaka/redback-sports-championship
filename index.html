@@ -519,7 +519,7 @@
     <div class="stat-chip"><span class="val">4</span><span class="lbl">GAMES PLAYED</span></div>
     <div class="stat-chip"><span class="val">4</span><span class="lbl">SPORTS</span></div>
     <div class="stat-chip"><span class="val">1</span><span class="lbl">SATURDAYS LEFT</span></div>
-    <div class="stat-chip"><span class="val">23 MAY</span><span class="lbl">LAST UPDATED</span></div>
+    <div class="stat-chip"><span class="val">30 MAY</span><span class="lbl">LAST UPDATED</span></div>
   </div>
 
   <div class="pixel-divider"><span>◆ RANKINGS ◆</span></div>
@@ -561,9 +561,11 @@ const TEAMS = [
     name: 'EXTERNAL RELATIONS',
     color: '#06b6d4',
     icon: '',
-    w: 1, l: 0, d: 0,
+    w: 2, l: 1, d: 0,
     games: [
       { date: '9 MAY', opp: 'EMBEDDED SYSTEMS', score: '2–1', result: 'W', sport: '🎯 Dodgeball' },
+      { date: '30 MAY', opp: 'EMBEDDED SYSTEMS', score: '-', result: 'L', sport: '🕵️ Codenames' },
+      { date: '30 MAY', opp: 'ER + MEDIA & DESIGN vs AV', score: '-', result: 'W', sport: '🕵️ Codenames' },
     ]
   },
   {
@@ -591,10 +593,11 @@ const TEAMS = [
     name: 'EMBEDDED SYSTEMS',
     color: '#f59e0b',
     icon: '',
-    w: 1, l: 1, d: 0,
+    w: 2, l: 1, d: 0,
     games: [
       { date: '9 MAY', opp: 'EXTERNAL RELATIONS', score: '1–2', result: 'L', sport: '🎯 Dodgeball' },
       { date: '23 MAY', opp: 'CHASSIS', score: '-', result: 'W', sport: '🕵️ Codenames' },
+      { date: '30 MAY', opp: 'EXTERNAL RELATIONS', score: '-', result: 'W', sport: '🕵️ Codenames' },
     ]
   },
   {
@@ -616,6 +619,28 @@ const TEAMS = [
     w: 0, l: 1, d: 0,
     games: [
       { date: '16 MAY', opp: 'BRAKES', score: '10–12', result: 'L', sport: '🏐 Volleyball' },
+    ]
+  },
+  {
+    id: 'autonomous-vehicles',
+    name: 'AUTONOMOUS VEHICLES',
+    color: '#14b8a6',
+    icon: '',
+    w: 1, l: 1, d: 0,
+    games: [
+      { date: '30 MAY', opp: 'MEDIA & DESIGN', score: '-', result: 'W', sport: '🕵️ Codenames' },
+      { date: '30 MAY', opp: 'ER + MEDIA & DESIGN', score: '-', result: 'L', sport: '🕵️ Codenames' },
+    ]
+  },
+  {
+    id: 'media-design',
+    name: 'MEDIA & DESIGN',
+    color: '#f97316',
+    icon: '',
+    w: 1, l: 1, d: 0,
+    games: [
+      { date: '30 MAY', opp: 'AUTONOMOUS VEHICLES', score: '-', result: 'L', sport: '🕵️ Codenames' },
+      { date: '30 MAY', opp: 'AUTONOMOUS VEHICLES', score: '-', result: 'W', sport: '🕵️ Codenames' },
     ]
   },
 ];
